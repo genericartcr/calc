@@ -11,67 +11,71 @@
         body {
             font-family: 'Inter', sans-serif;
         }
-        /* Custom gradient background */
-        .bg-gradient-blue {
-            background-image: linear-gradient(to top right, #3B82F6, #1D4ED8);
+
+        :root {
+            --ash-gray: #cad2c5;
+            --cambridge-blue: #84a98c;
+            --hookers-green: #52796f;
+            --dark-slate-gray: #354f52;
+            --charcoal: #2f3e46;
         }
     </style>
 </head>
-<body class="bg-gradient-blue flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen p-4" style="background-color: var(--ash-gray);">
 
     <!-- Calculator Container -->
-    <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-lg transform transition-all duration-300 hover:scale-105">
-        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8">Business Price Calculator</h1>
+    <div class="p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-lg" style="background-color: var(--cambridge-blue);">
+        <h1 class="text-4xl font-extrabold text-center mb-8" style="color: var(--charcoal);">Business Price Calculator</h1>
         
         <!-- Input Fields Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Product Rate Input -->
             <div>
-                <label for="rate" class="block text-gray-700 font-medium mb-2 text-sm">Product Rate (₹)</label>
-                <input type="number" id="rate" placeholder="e.g., 100" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+                <label for="rate" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Product Rate (₹)</label>
+                <input type="number" id="rate" placeholder="e.g., 100" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
             <!-- Discount Input -->
             <div>
-                <label for="discount" class="block text-gray-700 font-medium mb-2 text-sm">Discount Amount (%)</label>
-                <input type="number" id="discount" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+                <label for="discount" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Discount Amount (%)</label>
+                <input type="number" id="discount" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
             <!-- GST Input -->
             <div>
-                <label for="gst" class="block text-gray-700 font-medium mb-2 text-sm">GST Amount (%)</label>
-                <input type="number" id="gst" placeholder="e.g., 18" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+                <label for="gst" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">GST Amount (%)</label>
+                <input type="number" id="gst" placeholder="e.g., 18" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
             <!-- Profit Margin Input -->
             <div>
-                <label for="profitMargin" class="block text-gray-700 font-medium mb-2 text-sm">Profit Margin (%) - Optional</label>
-                <input type="number" id="profitMargin" placeholder="e.g., 20" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+                <label for="profitMargin" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Profit Margin (%) - Optional</label>
+                <input type="number" id="profitMargin" placeholder="e.g., 20" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
         </div>
 
         <!-- Calculate Button -->
         <div class="mt-8">
-            <button id="calculateBtn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+            <button id="calculateBtn" class="w-full text-white font-bold py-4 px-6 rounded-2xl shadow-lg hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-opacity-50 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105" style="background-color: var(--hookers-green); focus-ring-color: var(--dark-slate-gray);">
                 Calculate
             </button>
         </div>
 
         <!-- Results Section -->
-        <div class="mt-10 pt-6 border-t-2 border-gray-200">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Calculation Summary</h2>
+        <div class="mt-10 pt-6 border-t-2 border-white" style="border-color: var(--dark-slate-gray);">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--charcoal);">Calculation Summary</h2>
             <div id="results-container" class="space-y-4">
                 <!-- Calculated details will be inserted here -->
             </div>
             
-            <div class="mt-6 flex flex-col md:flex-row justify-between items-center bg-gray-100 p-4 rounded-xl border border-gray-200 shadow-inner">
+            <div class="mt-6 flex flex-col md:flex-row justify-between items-center p-4 rounded-xl shadow-inner" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
                 <div class="text-center md:text-left">
-                    <p class="text-gray-600 font-medium text-sm">Final Purchase Price:</p>
-                    <p id="purchasePrice" class="text-3xl font-bold text-gray-800 mt-1">₹0.00</p>
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Final Purchase Price:</p>
+                    <p id="purchasePrice" class="text-3xl font-bold mt-1" style="color: var(--charcoal);">₹0.00</p>
                 </div>
                 <div class="mt-4 md:mt-0 text-center md:text-right">
-                    <p class="text-gray-600 font-medium text-sm">Suggested Sale Price:</p>
-                    <p id="salePrice" class="text-3xl font-bold text-blue-600 mt-1">₹0.00</p>
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Suggested Sale Price:</p>
+                    <p id="salePrice" class="text-3xl font-bold mt-1" style="color: var(--hookers-green);">₹0.00</p>
                 </div>
             </div>
         </div>
@@ -117,32 +121,32 @@
             
             // Build the HTML for the detailed results
             let resultsHtml = `
-                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-gray-700">Initial Rate:</p>
-                    <p class="font-bold text-gray-900">₹${rate.toFixed(2)}</p>
+                <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                    <p style="color: var(--dark-slate-gray);">Initial Rate:</p>
+                    <p class="font-bold" style="color: var(--charcoal);">₹${rate.toFixed(2)}</p>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-gray-700">Discount Amount (${discount}%):</p>
+                <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                    <p style="color: var(--dark-slate-gray);">Discount Amount (${discount}%):</p>
                     <p class="font-bold text-red-500">-₹${discountAmount.toFixed(2)}</p>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-gray-700">Price after Discount:</p>
-                    <p class="font-bold text-gray-900">₹${priceAfterDiscount.toFixed(2)}</p>
+                <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                    <p style="color: var(--dark-slate-gray);">Price after Discount:</p>
+                    <p class="font-bold" style="color: var(--charcoal);">₹${priceAfterDiscount.toFixed(2)}</p>
                 </div>
-                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-                    <p class="text-gray-700">GST Amount (${gst}%):</p>
+                <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                    <p style="color: var(--dark-slate-gray);">GST Amount (${gst}%):</p>
                     <p class="font-bold text-green-500">+₹${gstAmount.toFixed(2)}</p>
                 </div>
             `;
             
             // 3. Check if profit margin is provided before calculating sale price
-            if (!isNaN(profitMargin)) {
+            if (!isNaN(profitMargin) && profitMargin > 0) {
                 const profitAmount = finalPurchasePrice * (profitMargin / 100);
                 const finalSalePrice = finalPurchasePrice + profitAmount;
                 
                 resultsHtml += `
-                    <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
-                        <p class="text-gray-700">Profit Amount (${profitMargin}%):</p>
+                    <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                        <p style="color: var(--dark-slate-gray);">Profit Amount (${profitMargin}%):</p>
                         <p class="font-bold text-green-500">+₹${profitAmount.toFixed(2)}</p>
                     </div>
                 `;
