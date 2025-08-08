@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Calculator</title>
+    <!-- Use Tailwind CSS for a modern, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom gradient background */
+        .bg-gradient-blue {
+            background-image: linear-gradient(to top right, #3B82F6, #1D4ED8);
+        }
+    </style>
+</head>
+<body class="bg-gradient-blue flex items-center justify-center min-h-screen p-4">
+
+    <!-- Calculator Container -->
+    <div class="bg-white p-8 md:p-10 rounded-3xl shadow-2xl w-full max-w-lg transform transition-all duration-300 hover:scale-105">
+        <h1 class="text-4xl font-extrabold text-center text-gray-900 mb-8">Business Price Calculator</h1>
+        
+        <!-- Input Fields Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Product Rate Input -->
+            <div>
+                <label for="rate" class="block text-gray-700 font-medium mb-2 text-sm">Product Rate (₹)</label>
+                <input type="number" id="rate" placeholder="e.g., 100" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+            </div>
+
+            <!-- Discount Input -->
+            <div>
+                <label for="discount" class="block text-gray-700 font-medium mb-2 text-sm">Discount Amount (%)</label>
+                <input type="number" id="discount" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+            </div>
+
+            <!-- GST Input -->
+            <div>
+                <label for="gst" class="block text-gray-700 font-medium mb-2 text-sm">GST Amount (%)</label>
+                <input type="number" id="gst" placeholder="e.g., 18" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+            </div>
+
+            <!-- Profit Margin Input -->
+            <div>
+                <label for="profitMargin" class="block text-gray-700 font-medium mb-2 text-sm">Profit Margin (%) - Optional</label>
+                <input type="number" id="profitMargin" placeholder="e.g., 20" class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 transition-colors duration-200 text-lg">
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <div class="mt-8">
+            <button id="calculateBtn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105">
+                Calculate
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div class="mt-10 pt-6 border-t-2 border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Calculation Summary</h2>
+            <div id="results-container" class="space-y-4">
+                <!-- Calculated details will be inserted here -->
+            </div>
+            
+            <div class="mt-6 flex flex-col md:flex-row justify-between items-center bg-gray-100 p-4 rounded-xl border border-gray-200 shadow-inner">
+                <div class="text-center md:text-left">
+                    <p class="text-gray-600 font-medium text-sm">Final Purchase Price:</p>
+                    <p id="purchasePrice" class="text-3xl font-bold text-gray-800 mt-1">₹0.00</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-center md:text-right">
+                    <p class="text-gray-600 font-medium text-sm">Suggested Sale Price:</p>
+                    <p id="salePrice" class="text-3xl font-bold text-blue-600 mt-1">₹0.00</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get all the necessary elements from the DOM
+        const rateInput = document.getElementById('rate');
+        const discountInput = document.getElementById('discount');
+        const gstInput = document.getElementById('gst');
+        const profitMarginInput = document.getElementById('profitMargin');
+        const calculateBtn = document.getElementById('calculateBtn');
+        const purchasePriceEl = document.getElementById('purchasePrice');
+        const salePriceEl = document.getElementById('salePrice');
+        const resultsContainer = document.getElementById('results-container');
+
+        // Add a click event listener to the button
+        calculateBtn.addEventListener('click', () => {
+            // Get the values and convert them to numbers
+            const rate = parseFloat(rateInput.value);
+            const discount = parseFloat(discountInput.value);
+            const gst = parseFloat(gstInput.value);
+            const profitMargin = parseFloat(profitMarginInput.value);
+
+            // Basic validation to ensure all mandatory inputs are valid numbers
+            if (isNaN(rate) || isNaN(discount) || isNaN(gst)) {
+                purchasePriceEl.textContent = 'Invalid input';
+                salePriceEl.textContent = 'Invalid input';
+                resultsContainer.innerHTML = '<p class="text-red-500 font-medium text-center">Please enter valid numbers for Rate, Discount, and GST.</p>';
+                return;
+            }
+            
+            // 1. Calculate the price after discount
+            const discountAmount = rate * (discount / 100);
+            const priceAfterDiscount = rate - discountAmount;
+
+            // 2. Calculate the final purchase price after GST
+            const gstAmount = priceAfterDiscount * (gst / 100);
+            const finalPurchasePrice = priceAfterDiscount + gstAmount;
+
+            // Clear previous results
+            resultsContainer.innerHTML = '';
+            
+            // Build the HTML for the detailed results
+            let resultsHtml = `
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-gray-700">Initial Rate:</p>
+                    <p class="font-bold text-gray-900">₹${rate.toFixed(2)}</p>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-gray-700">Discount Amount (${discount}%):</p>
+                    <p class="font-bold text-red-500">-₹${discountAmount.toFixed(2)}</p>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-gray-700">Price after Discount:</p>
+                    <p class="font-bold text-gray-900">₹${priceAfterDiscount.toFixed(2)}</p>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+                    <p class="text-gray-700">GST Amount (${gst}%):</p>
+                    <p class="font-bold text-green-500">+₹${gstAmount.toFixed(2)}</p>
+                </div>
+            `;
+            
+            // 3. Check if profit margin is provided before calculating sale price
+            if (!isNaN(profitMargin)) {
+                const profitAmount = finalPurchasePrice * (profitMargin / 100);
+                const finalSalePrice = finalPurchasePrice + profitAmount;
+                
+                resultsHtml += `
+                    <div class="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-gray-200">
+                        <p class="text-gray-700">Profit Amount (${profitMargin}%):</p>
+                        <p class="font-bold text-green-500">+₹${profitAmount.toFixed(2)}</p>
+                    </div>
+                `;
+
+                salePriceEl.textContent = `₹${finalSalePrice.toFixed(2)}`;
+            } else {
+                salePriceEl.textContent = '₹0.00';
+            }
+
+            // Update the results container and final prices
+            resultsContainer.innerHTML = resultsHtml;
+            purchasePriceEl.textContent = `₹${finalPurchasePrice.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
