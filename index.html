@@ -37,7 +37,7 @@
 
             <!-- Discount Input -->
             <div>
-                <label for="discount" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Discount Amount (%)</label>
+                <label for="discount" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Discount (%) - Optional</label>
                 <input type="number" id="discount" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
@@ -51,6 +51,12 @@
             <div>
                 <label for="profitMargin" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Profit Margin (%) - Optional</label>
                 <input type="number" id="profitMargin" placeholder="e.g., 20" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
+            </div>
+
+            <!-- Quantity Input (New) -->
+            <div class="md:col-span-2">
+                <label for="quantity" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Quantity per Unit - Optional</label>
+                <input type="number" id="quantity" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
         </div>
 
@@ -70,12 +76,23 @@
             
             <div class="mt-6 flex flex-col md:flex-row justify-between items-center p-4 rounded-xl shadow-inner" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
                 <div class="text-center md:text-left">
-                    <p class="font-medium text-sm" style="color: var(--charcoal);">Final Purchase Price:</p>
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Total Purchase Price:</p>
                     <p id="purchasePrice" class="text-3xl font-bold mt-1" style="color: var(--charcoal);">₹0.00</p>
                 </div>
                 <div class="mt-4 md:mt-0 text-center md:text-right">
-                    <p class="font-medium text-sm" style="color: var(--charcoal);">Suggested Sale Price:</p>
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Total Suggested Sale Price:</p>
                     <p id="salePrice" class="text-3xl font-bold mt-1" style="color: var(--hookers-green);">₹0.00</p>
+                </div>
+            </div>
+             <!-- New Per-Quantity Results Section -->
+            <div class="mt-4 flex flex-col md:flex-row justify-between items-center p-4 rounded-xl shadow-inner" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                <div class="text-center md:text-left">
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Per Quantity Purchase Price:</p>
+                    <p id="perQuantityPurchasePrice" class="text-3xl font-bold mt-1" style="color: var(--charcoal);">₹0.00</p>
+                </div>
+                <div class="mt-4 md:mt-0 text-center md:text-right">
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Per Quantity Suggested Sale Price:</p>
+                    <p id="perQuantitySalePrice" class="text-3xl font-bold mt-1" style="color: var(--hookers-green);">₹0.00</p>
                 </div>
             </div>
         </div>
@@ -87,27 +104,33 @@
         const discountInput = document.getElementById('discount');
         const gstInput = document.getElementById('gst');
         const profitMarginInput = document.getElementById('profitMargin');
+        const quantityInput = document.getElementById('quantity'); // New input
         const calculateBtn = document.getElementById('calculateBtn');
         const purchasePriceEl = document.getElementById('purchasePrice');
         const salePriceEl = document.getElementById('salePrice');
+        const perQuantityPurchasePriceEl = document.getElementById('perQuantityPurchasePrice'); // New output
+        const perQuantitySalePriceEl = document.getElementById('perQuantitySalePrice'); // New output
         const resultsContainer = document.getElementById('results-container');
 
         // Add a click event listener to the button
         calculateBtn.addEventListener('click', () => {
-            // Get the values and convert them to numbers
+            // Get the values and convert them to numbers, defaulting optional ones to 0
             const rate = parseFloat(rateInput.value);
-            const discount = parseFloat(discountInput.value);
+            const discount = discountInput.value === '' ? 0 : parseFloat(discountInput.value);
             const gst = parseFloat(gstInput.value);
-            const profitMargin = parseFloat(profitMarginInput.value);
+            const profitMargin = profitMarginInput.value === '' ? 0 : parseFloat(profitMarginInput.value);
+            const quantity = quantityInput.value === '' ? 1 : parseFloat(quantityInput.value);
 
             // Basic validation to ensure all mandatory inputs are valid numbers
-            if (isNaN(rate) || isNaN(discount) || isNaN(gst)) {
+            if (isNaN(rate) || isNaN(gst) || isNaN(discount) || isNaN(profitMargin) || isNaN(quantity)) {
                 purchasePriceEl.textContent = 'Invalid input';
                 salePriceEl.textContent = 'Invalid input';
-                resultsContainer.innerHTML = '<p class="text-red-500 font-medium text-center">Please enter valid numbers for Rate, Discount, and GST.</p>';
+                perQuantityPurchasePriceEl.textContent = 'Invalid input';
+                perQuantitySalePriceEl.textContent = 'Invalid input';
+                resultsContainer.innerHTML = '<p class="text-red-500 font-medium text-center">Please enter valid numbers for Rate and GST.</p>';
                 return;
             }
-            
+
             // 1. Calculate the price after discount
             const discountAmount = rate * (discount / 100);
             const priceAfterDiscount = rate - discountAmount;
@@ -139,10 +162,11 @@
                 </div>
             `;
             
+            let finalSalePrice = 0;
             // 3. Check if profit margin is provided before calculating sale price
-            if (!isNaN(profitMargin) && profitMargin > 0 && profitMargin < 100) {
+            if (profitMargin > 0 && profitMargin < 100) {
                 // Correct calculation for profit margin
-                const finalSalePrice = finalPurchasePrice / (1 - (profitMargin / 100));
+                finalSalePrice = finalPurchasePrice / (1 - (profitMargin / 100));
                 const profitAmount = finalSalePrice - finalPurchasePrice;
                 
                 resultsHtml += `
@@ -160,6 +184,23 @@
             // Update the results container and final prices
             resultsContainer.innerHTML = resultsHtml;
             purchasePriceEl.textContent = `₹${finalPurchasePrice.toFixed(2)}`;
+
+            // 4. Calculate and display per-quantity prices
+            if (quantity > 0) {
+                const perQuantityPurchasePrice = finalPurchasePrice / quantity;
+                perQuantityPurchasePriceEl.textContent = `₹${perQuantityPurchasePrice.toFixed(2)}`;
+
+                if (profitMargin > 0 && profitMargin < 100) {
+                    const perQuantitySalePrice = finalSalePrice / quantity;
+                    perQuantitySalePriceEl.textContent = `₹${perQuantitySalePrice.toFixed(2)}`;
+                } else {
+                    perQuantitySalePriceEl.textContent = '₹0.00';
+                }
+            } else {
+                // Reset per-quantity outputs if quantity is not provided or invalid
+                perQuantityPurchasePriceEl.textContent = '₹0.00';
+                perQuantitySalePriceEl.textContent = '₹0.00';
+            }
         });
     </script>
 </body>
