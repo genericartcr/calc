@@ -14,7 +14,7 @@
 
         :root {
             --ash-gray: #c2d1b8;
-            --cambridge-blue: #84a98c;  
+            --cambridge-blue: #84a98c;
             --hookers-green: #52796f;
             --dark-slate-gray: #354f52;
             --charcoal: #2f3e46;
@@ -140,13 +140,14 @@
             `;
             
             // 3. Check if profit margin is provided before calculating sale price
-            if (!isNaN(profitMargin) && profitMargin > 0) {
-                const profitAmount = finalPurchasePrice * (profitMargin / 100);
-                const finalSalePrice = finalPurchasePrice + profitAmount;
+            if (!isNaN(profitMargin) && profitMargin > 0 && profitMargin < 100) {
+                // Correct calculation for profit margin
+                const finalSalePrice = finalPurchasePrice / (1 - (profitMargin / 100));
+                const profitAmount = finalSalePrice - finalPurchasePrice;
                 
                 resultsHtml += `
                     <div class="flex justify-between items-center p-3 rounded-lg shadow-sm" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
-                        <p style="color: var(--dark-slate-gray);">Profit Amount (${profitMargin}%):</p>
+                        <p style="color: var(--dark-slate-gray);">Profit Amount (${profitMargin}% Margin):</p>
                         <p class="font-bold text-green-500">+₹${profitAmount.toFixed(2)}</p>
                     </div>
                 `;
