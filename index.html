@@ -37,7 +37,7 @@
 
             <!-- Discount Input -->
             <div>
-                <label for="discount" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Discount (%) - Optional</label>
+                <label for="discount" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Discount    (%) - Optional</label>
                 <input type="number" id="discount" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
@@ -53,7 +53,7 @@
                 <input type="number" id="profitMargin" placeholder="e.g., 20" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
             </div>
 
-            <!-- Quantity Input (New) -->
+            <!-- Quantity Input -->
             <div class="md:col-span-2">
                 <label for="quantity" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Quantity per Unit - Optional</label>
                 <input type="number" id="quantity" placeholder="e.g., 10" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
@@ -96,23 +96,54 @@
                 </div>
             </div>
         </div>
+
+        <!-- Calculate Margin Section (New) -->
+        <div class="mt-10 pt-6 border-t-2 border-white" style="border-color: var(--dark-slate-gray);">
+            <h2 class="text-2xl font-bold mb-4" style="color: var(--charcoal);">Calculate Margin from Sale Price</h2>
+             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Selling Price Input -->
+                <div>
+                    <label for="sellingPrice" class="block font-medium mb-2 text-sm" style="color: var(--dark-slate-gray);">Selling Price (₹)</label>
+                    <input type="number" id="sellingPrice" placeholder="e.g., 40" class="w-full px-4 py-3 border-2 border-white rounded-xl focus:outline-none transition-colors duration-200 text-lg" style="background-color: var(--ash-gray); border-color: var(--dark-slate-gray); color: var(--charcoal); focus:border-color: var(--hookers-green);">
+                </div>
+
+                <!-- Margin Output -->
+                <div class="p-4 rounded-xl shadow-inner flex items-center justify-center" style="background-color: var(--ash-gray); border: 2px solid var(--dark-slate-gray);">
+                    <p class="font-medium text-sm" style="color: var(--charcoal);">Calculated Margin:</p>
+                    <p id="calculatedMargin" class="text-3xl font-bold ml-2" style="color: var(--hookers-green);">0.00%</p>
+                </div>
+            </div>
+            <!-- Calculate Margin Button -->
+            <div class="mt-6">
+                <button id="calculateMarginBtn" class="w-full text-white font-bold py-4 px-6 rounded-2xl shadow-lg hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-opacity-50 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105" style="background-color: var(--hookers-green); focus-ring-color: var(--dark-slate-gray);">
+                    Calculate Margin
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
+        let finalPurchasePrice = 0; // Store this globally to be accessible by both functions
+
         // Get all the necessary elements from the DOM
         const rateInput = document.getElementById('rate');
         const discountInput = document.getElementById('discount');
         const gstInput = document.getElementById('gst');
         const profitMarginInput = document.getElementById('profitMargin');
-        const quantityInput = document.getElementById('quantity'); // New input
+        const quantityInput = document.getElementById('quantity');
         const calculateBtn = document.getElementById('calculateBtn');
         const purchasePriceEl = document.getElementById('purchasePrice');
         const salePriceEl = document.getElementById('salePrice');
-        const perQuantityPurchasePriceEl = document.getElementById('perQuantityPurchasePrice'); // New output
-        const perQuantitySalePriceEl = document.getElementById('perQuantitySalePrice'); // New output
+        const perQuantityPurchasePriceEl = document.getElementById('perQuantityPurchasePrice');
+        const perQuantitySalePriceEl = document.getElementById('perQuantitySalePrice');
         const resultsContainer = document.getElementById('results-container');
+        
+        // New elements for margin calculation
+        const sellingPriceInput = document.getElementById('sellingPrice');
+        const calculateMarginBtn = document.getElementById('calculateMarginBtn');
+        const calculatedMarginEl = document.getElementById('calculatedMargin');
 
-        // Add a click event listener to the button
+        // Add a click event listener to the main calculate button
         calculateBtn.addEventListener('click', () => {
             // Get the values and convert them to numbers, defaulting optional ones to 0
             const rate = parseFloat(rateInput.value);
@@ -137,7 +168,7 @@
 
             // 2. Calculate the final purchase price after GST
             const gstAmount = priceAfterDiscount * (gst / 100);
-            const finalPurchasePrice = priceAfterDiscount + gstAmount;
+            finalPurchasePrice = priceAfterDiscount + gstAmount; // Update the global variable
 
             // Clear previous results
             resultsContainer.innerHTML = '';
@@ -201,6 +232,21 @@
                 perQuantityPurchasePriceEl.textContent = '₹0.00';
                 perQuantitySalePriceEl.textContent = '₹0.00';
             }
+        });
+
+        // Add a click event listener to the new calculate margin button
+        calculateMarginBtn.addEventListener('click', () => {
+            const sellingPrice = parseFloat(sellingPriceInput.value);
+
+            // Validation
+            if (isNaN(finalPurchasePrice) || finalPurchasePrice <= 0 || isNaN(sellingPrice) || sellingPrice <= 0) {
+                calculatedMarginEl.textContent = 'Error';
+                return;
+            }
+
+            // Margin calculation formula: (Sale Price - Purchase Price) / Sale Price * 100
+            const margin = ((sellingPrice - finalPurchasePrice) / sellingPrice) * 100;
+            calculatedMarginEl.textContent = `${margin.toFixed(2)}%`;
         });
     </script>
 </body>
