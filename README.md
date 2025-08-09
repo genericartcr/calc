@@ -1,5 +1,6 @@
-Purchase Calculator
+# Purchase Calculator
 
+# genericartcr.githubb.io/calc/
 This is a simple, web-based calculator designed to help businesses determine the final purchase price and a suggested sale price for a product. It accounts for discounts, GST, and a desired profit margin, providing a clear breakdown of the costs.
 Features
 
